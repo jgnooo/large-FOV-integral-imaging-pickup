@@ -1,23 +1,21 @@
+import os
 import argparse
 import numpy as np
 
 import monodepth.depth_estimator as estimator
+
 import utils
 
 
 parser = argparse.ArgumentParser(description='Large field-of-view integral imaging pickup system.')
 parser.add_argument('--color_path', type=str,
-                    default='./inputs/color.png', help='Path of input image.')
-parser.add_argument('--depth_path', type=str,
-                    default='./inputs/depth.png', help='Path of depth image.')
+                    default='./inputs/183516667.jpg', help='Path of input image.')
 parser.add_argument('--output_path', type=str,
                     default='./results/', help='Output root directory.')
 
 parser.add_argument('--model_path', type=str,
                     default='./monodepth/model.h5', help='Model file for predicting a depth.')
 
-parser.add_argument('--is_prediction', action='store_true',
-                    help='Whether or not need to predict a depth map.')
 parser.add_argument('--is_gpu', action='store_true',
                     help='Select GPU or Not.')
 
@@ -72,14 +70,9 @@ def cvt_mm2pixel(inputs, pitch_of_pixel):
     return cvt_inputs
 
 
-def get_input_params():
-    """Parameters
-    
-    Image
-        - color : Color image.
-        - depth : Depth image corresponding a color image.
-    
-    Lens Parameters
+def get_lens_params():
+    """Lens Parameters
+
         Information of Lens-array
             - P_L           : Size of elemental lens.
             - num_of_lenses : Number of elemental lens.
@@ -88,21 +81,8 @@ def get_input_params():
         Information of Display
             - P_D           : Pixel pitch of LCD.
             - g             : Gap between lens and display.
-    """
-    name = args.color_path.split('/')[-1].split('.')[0]
-    
-    color = utils.load_image(args.color_path)
-
-    # if you have a depth map corresponding a color image, Do not need to predict.
-    if args.is_prediction:
-        depth = get_depth_map(color)
-    else:
-        depth = np.load(args.depth_path)
-    
+    """    
     inputs = {}
-    inputs['name'] = name
-    inputs['color'] = color
-    inputs['depth'] = depth
     inputs['num_of_lenses'] = args.num_of_lenses
     inputs['P_D'] = args.P_D
     inputs['P_L'] = args.P_L
@@ -112,11 +92,30 @@ def get_input_params():
 
 
 def main():
-    # Setup the input parameters & convert mm to pixel unit.
-    inputs = get_input_params()
+    # Set experiment name.
+    experiment_name = args.color_path.split('/')[-1].split('.')[0]
+
+    # Make directory for saving results.
+    output_dir = os.path.join(
+        args.output_path,
+        'N{}F{}G{}_{}'.format(args.num_of_lenses, args.f, args.g, experiment_name)
+    )
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+
+    # Setup the micro lens parameters.
+    inputs = get_lens_params()
+
+    # Load input RGB image.
+    inputs['color'] = utils.load_image(args.color_path)
+    inputs['depth'] = get_depth_map(inputs['color'])
+
+    # Convert mm to pixel.
     inputs = cvt_mm2pixel(inputs, pitch_of_pixel=inputs['P_D'])
+    
 
-
+    
 
 if __name__ == "__main__":
     main()
