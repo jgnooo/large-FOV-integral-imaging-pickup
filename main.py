@@ -58,24 +58,6 @@ def get_depth_map(color):
     return depth
 
 
-def cvt_mm2pixel(inputs, pitch_of_pixel):
-    """Convert mm unit to pixel unit.
-
-    Args:
-        inputs         : Input dictionary including image information and lens parameters.
-        pitch_of_pixel : Pixel pitch of LCD.
-    Returns:
-        cvt_inputs     : Input dictionary converted pixel units.
-    """
-    cvt_inputs = {}
-    cvt_inputs['depth'] = utils.cvt_mm2pixel(inputs['depth'], pitch_of_pixel)
-    cvt_inputs['P_D'] = utils.cvt_mm2pixel(inputs['P_D'], pitch_of_pixel)
-    cvt_inputs['P_L'] = utils.cvt_mm2pixel(inputs['P_L'], pitch_of_pixel)
-    cvt_inputs['f'] = utils.cvt_mm2pixel(inputs['f'], pitch_of_pixel)
-    cvt_inputs['g'] = utils.cvt_mm2pixel(inputs['g'], pitch_of_pixel)
-    return cvt_inputs
-
-
 def get_lens_params():
     """Lens Parameters
 
