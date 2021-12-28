@@ -1,6 +1,7 @@
 import os
 import argparse
 import numpy as np
+import multiprocessing
 
 import monodepth.depth_estimator as estimator
 
@@ -22,15 +23,20 @@ parser.add_argument('--is_gpu', action='store_true',
 parser.add_argument('--num_of_lenses', type=int,
                     default=200, help='Number of elemental lenses.')
 parser.add_argument('--P_D', type=float,
-                    default=0.1245, help='Pixel pitch of LCD.')
+                    default=1, help='Pixel pitch of LCD.')
 parser.add_argument('--P_L', type=int,
-                    default=1.8675, help='Size of elemental lens.')
+                    default=15, help='Size of elemental lens.')
 parser.add_argument('--f', type=float,
                     default=10, help='Focal length of elemental lens.')
 parser.add_argument('--g', type=float,
-                    default=12, help='Gap between lens and display.')
+                    default=11, help='Gap between lens and display.')
 
 args = parser.parse_args()
+
+
+def divide_image(image):
+
+    return image_list
 
 
 def get_depth_map(color):
@@ -98,7 +104,7 @@ def main():
     # Make directory for saving results.
     output_dir = os.path.join(
         args.output_path,
-        'N{}F{}G{}_{}'.format(args.num_of_lenses, args.f, args.g, experiment_name)
+        experiment_name
     )
 
     if not os.path.exists(output_dir):
@@ -111,10 +117,9 @@ def main():
     inputs['color'] = utils.load_image(args.color_path)
     inputs['depth'] = get_depth_map(inputs['color'])
 
-    # Convert mm to pixel.
-    inputs = cvt_mm2pixel(inputs, pitch_of_pixel=inputs['P_D'])
-    
-
+    # Divide image / depth.
+    inputs['color_list'] = divide_image(inputs['color'])
+    inputs['depth_list'] = divide_image(inputs['depth'])
     
 
 if __name__ == "__main__":
