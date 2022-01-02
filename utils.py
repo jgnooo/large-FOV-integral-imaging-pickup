@@ -12,8 +12,8 @@ def load_image(path):
         img  : Numpy array. (image)
     """
     # In this system, the input image need to have resolution (480, 854).
-    # if color height != 480 and color width != 854, Resize the input image.
-    img = Image.open(path).resize((854, 480))
+    # if color height != 700 and color width != 1200, Resize the input image.
+    img = Image.open(path).resize((1200, 700))
     img = np.asarray(img)
     return img
 

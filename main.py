@@ -3,6 +3,9 @@ import argparse
 import numpy as np
 import multiprocessing
 
+from PIL import Image
+from functools import partial
+
 import monodepth.depth_estimator as estimator
 
 import utils
@@ -35,11 +38,17 @@ args = parser.parse_args()
 
 
 def divide_image(image):
+    width_list = [i * 200 for i in range(4)]
+    height_list = [0, 100]
 
+    image_list = []
+    for h in height_list:
+        for w in width_list:
+            image_list.append(image[h:h + 600, w:w + 600])
     return image_list
 
 
-def get_depth_map(color):
+def get_depth_map(color, model_path):
     """Predict a depth map from a single RGB image.
 
     Args:
@@ -54,7 +63,7 @@ def get_depth_map(color):
         color = estimator.resize_image(color)
     
     net_input = estimator.preprocess_image(color)
-    depth = estimator.estimate_depth(net_input, height, width, args.model_path)
+    depth = estimator.estimate_depth(net_input, height, width, model_path)
     return depth
 
 
@@ -79,6 +88,11 @@ def get_lens_params():
     return inputs
 
 
+def multiprocess_ini():
+
+    pass
+
+
 def main():
     # Set experiment name.
     experiment_name = args.color_path.split('/')[-1].split('.')[0]
@@ -95,14 +109,23 @@ def main():
     # Setup the micro lens parameters.
     inputs = get_lens_params()
 
-    # Load input RGB image.
+    # Load input RGB image and predict a depth image.
     inputs['color'] = utils.load_image(args.color_path)
-    inputs['depth'] = get_depth_map(inputs['color'])
+    inputs['depth'] = get_depth_map(inputs['color'], args.model_path)
 
-    # Divide image / depth.
-    inputs['color_list'] = divide_image(inputs['color'])
-    inputs['depth_list'] = divide_image(inputs['depth'])
+    # Divide image / depth for hierarchical integral imaging pickup system.
+    color_list = divide_image(inputs['color'])
+    depth_list = divide_image(inputs['depth'])
+    data_list = zip(color_list, depth_list)
     
+    # Hierarchical integral imaging pickup system using multi-processing
+    multiprocessing.set_start_method('spawn')
+    pool = multiprocessing.Pool(processes=8)
+    func = partial(multiprocess_ini, 'RGB')
+    pool.map(func, data_list)
+    pool.close()
+    pool.join()
+
 
 if __name__ == "__main__":
     main()
