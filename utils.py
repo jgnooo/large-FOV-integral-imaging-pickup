@@ -29,6 +29,24 @@ def save_image(img, path):
     img.save(path)
 
 
+def divide_image(image):
+    """Divide image for hierarchiclar integral imaging pickup system.
+
+    Args:
+        image : Numpy array. (image)
+    Returns:
+        image_list : Partitioned image list.
+    """
+    width_list = [i * 200 for i in range(4)]
+    height_list = [0, 100]
+
+    image_list = []
+    for h in height_list:
+        for w in width_list:
+            image_list.append(image[h:h + 600, w:w + 600])
+    return image_list
+
+
 def visualize_depth(depth):
     """Visualize raw depth image.
 
