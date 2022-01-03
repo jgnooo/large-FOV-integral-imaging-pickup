@@ -28,5 +28,9 @@ _In this system, use the code_ [Computational integral imaging pickup system](ht
     ```
 
 ## Results of our system
+- Sub-aperture Image Array
+<p align="center"><img src="https://user-images.githubusercontent.com/55485826/147924806-4f6fcbb2-9525-4171-8642-322c7dc442d9.png"></p>
 
 ## To-Do List
+1. Update process.
+2. Update codes.
