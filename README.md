@@ -15,10 +15,10 @@ _In this system, use the code_ [Computational integral imaging pickup system](ht
 ## Usage
 - Download depth estimation model file.
     - Go to the link above, and download model.
-    - Locate file at `monodepth`
+    - Locate file at `monodepth` or `/your/own/path/`.
 - Prepare the input image.
-    - Locate the input color image to `inputs` directory or `/your/own/dir/`.
-- Start integral imaging pickup system.
+    - Locate the input color image to `inputs` directory or `/your/own/path/`.
+- Start large FOV integral imaging pickup system.
     ```Bash
     python main.py \
         --color_path ./inputs/image_file_name or /your/own/path/ \
