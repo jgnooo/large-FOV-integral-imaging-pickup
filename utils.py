@@ -33,7 +33,7 @@ def divide_image(image):
     """Divide image for hierarchiclar integral imaging pickup system.
 
     Args:
-        image : Numpy array. (image)
+        image      : Numpy array. (image)
     Returns:
         image_list : Partitioned image list.
     """
