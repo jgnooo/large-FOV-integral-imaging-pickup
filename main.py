@@ -30,31 +30,14 @@ parser.add_argument('--is_gpu', action='store_true',
 args = parser.parse_args()
 
 
-def divide_image(image):
-    """
-
-    Args:
-        
-    Returns:
-        
-    """
-    width_list = [i * 200 for i in range(4)]
-    height_list = [0, 100]
-
-    image_list = []
-    for h in height_list:
-        for w in width_list:
-            image_list.append(image[h:h + 600, w:w + 600])
-    return image_list
-
-
 def get_depth_map(color, model_path):
     """Predict a depth map from a single RGB image.
 
     Args:
-        color : Input color image.
+        color      : Input color image.
+        model_path : Deep learning depth estimation model file path.
     Returns:
-        depth : Predicted a depth image corresponding a input RGB image.
+        depth      : Predicted a depth image corresponding a input RGB image.
     """
     height, width, _ = color.shape
 
@@ -89,12 +72,13 @@ def get_lens_params():
 
 
 def merge_sub_apertures(outputs, num_of_lenses):
-    """
+    """Merge sub-aperture images to generate large FOV images.
 
     Args:
-        
+        outputs            : Sub-aperture image array from integral imaging system about each part of images.
+        num_of_lenses      : Number of elemental lens.
     Returns:
-        
+        LFOV_sub_apertures : Large field-of-view sub-aperture image array.
     """
     print('Generate large FOV sub-aperture image array...')
     LFOV_sub_apertures = np.zeros((467 * 7, 805 * 7, 3))
@@ -128,12 +112,13 @@ def merge_sub_apertures(outputs, num_of_lenses):
 
 
 def multiprocess_ini(inputs, data):
-    """
+    """Multi-process integral imaging pickup system for each part of images.
 
     Args:
-        
+        inputs        : Parameter for integarl imaging pickup system.
+        data          : RGB image and depth image data.
     Returns:
-        
+        sub_apertures : Sub-aperture image array.
     """
     image = data[0]
     depth = data[1]
@@ -171,8 +156,8 @@ def main():
     depth = get_depth_map(image, args.model_path)
 
     # Divide image / depth for hierarchical integral imaging pickup system.
-    image_list = divide_image(image)
-    depth_list = divide_image(depth)
+    image_list = utils.divide_image(image)
+    depth_list = utils.divide_image(depth)
     data_list = list(zip(image_list, depth_list))
     
     # Hierarchical integral imaging pickup system using multi-processing
