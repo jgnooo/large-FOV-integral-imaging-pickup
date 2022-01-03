@@ -33,9 +33,9 @@ def estimate_depth(net_input, height, width, weights_path):
     model = load_trained_model(weights_path)
     print('Model loaded...')
 
+    print('Predict a depth image...')
     pred = model.predict(net_input)
     pred = pred.reshape((240, 320))
     pred = np.clip((1000 / pred), 10, 1000)
     pred = resize(pred, (height, width), order=1, preserve_range=True, mode='reflect', anti_aliasing=True)
-    print('Depth predicted...')
     return pred
