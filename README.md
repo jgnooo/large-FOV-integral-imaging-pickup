@@ -7,7 +7,7 @@ Download paper : [Computational large field-of-view RGB-D integral imaging syste
 _In this system, use the code_ [Computational integral imaging pickup system](https://github.com/jgnooo/integral-imaging-pickup)
 
 ## Process
-
+<p align="center"><img src="https://user-images.githubusercontent.com/55485826/148034898-16077426-5e3e-4d6f-999d-e56910632841.png"></p>
 
 ## Pre-trained monocular depth estimation model
 * [Trained by NYU RGB-D V2](https://drive.google.com/uc?export=download&id=1k8McRE2vOtrkHmG9ZU6Cd-IUDtr2Fbbv) (650 MB)
@@ -34,5 +34,4 @@ _In this system, use the code_ [Computational integral imaging pickup system](ht
 <p align="center"><img src="https://user-images.githubusercontent.com/55485826/147925539-6d2c945d-1670-4880-b663-3349b54c9596.gif"></p>
 
 ## To-Do List
-1. Update process.
-2. Update codes.
+- Update codes (Depth sub-aperture images).
